@@ -127,7 +127,7 @@ void AlpacaDevice::aReadJson(JsonObject &root)
 void AlpacaDevice::aWriteJson(JsonObject &root)
 {
     // read-only values marked with #
-    JsonObject obj_general = root.createNestedObject(F("General"));
+    JsonObject obj_general = root[F("General")].to<JsonObject>();
     obj_general[F("Name")] = getDeviceName();
     obj_general[F("Description")] = _device_desc;
     obj_general[F("UID")] = _device_uid;
@@ -135,7 +135,7 @@ void AlpacaDevice::aWriteJson(JsonObject &root)
 
 void AlpacaDevice::_getJsondata(AsyncWebServerRequest *request)
 {
-    DynamicJsonDocument doc(1024);
+    JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
     aWriteJson(root);
     String ser_json = "";

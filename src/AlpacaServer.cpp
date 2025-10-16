@@ -287,7 +287,7 @@ void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket& udpPacket)
 
 void AlpacaServer::_getJsondata(AsyncWebServerRequest *request)
 {
-    DynamicJsonDocument doc(1024);
+    JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
     _writeJson(root);
     String ser_json = "";
@@ -297,7 +297,7 @@ void AlpacaServer::_getJsondata(AsyncWebServerRequest *request)
 
 void AlpacaServer::_getLinks(AsyncWebServerRequest *request)
 {
-    DynamicJsonDocument doc(512);
+    JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
     root[F("Server")] = F("/setup");
     for(int i=0; i<_n_devices; i++) {
@@ -329,11 +329,11 @@ void AlpacaServer::_writeJson(JsonObject &root)
 
 bool AlpacaServer::saveSettings()
 {
-    DynamicJsonDocument doc(4096);
+    JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
     _writeJson(root);
     for(int i=0; i<_n_devices; i++) {
-        JsonObject json_obj = root.createNestedObject(_device[i]->getDeviceUID());
+        JsonObject json_obj = root[_device[i]->getDeviceUID()].to<JsonObject>();
         _device[i]->aWriteJson(json_obj);
     }
     SPIFFS.remove(SETTINGS_FILE);
@@ -355,7 +355,7 @@ bool AlpacaServer::saveSettings()
 
 bool AlpacaServer::loadSettings()
 {
-    DynamicJsonDocument doc(4096);
+    JsonDocument doc;
     
     File file = SPIFFS.open(SETTINGS_FILE, FILE_READ);
     if(!file) {
