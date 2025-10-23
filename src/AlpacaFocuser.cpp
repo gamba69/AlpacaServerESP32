@@ -1,7 +1,6 @@
 #include "AlpacaFocuser.h"
 
-void AlpacaFocuser::registerCallbacks()
-{
+void AlpacaFocuser::registerCallbacks() {
     AlpacaDevice::registerCallbacks();
     this->createCallBack(LHF(aGetAbsolute), HTTP_GET, "absolute");
     this->createCallBack(LHF(aGetIsMoving), HTTP_GET, "ismoving");

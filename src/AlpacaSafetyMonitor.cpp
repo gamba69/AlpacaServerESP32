@@ -1,7 +1,6 @@
 #include "AlpacaSafetyMonitor.h"
 
-void AlpacaSafetyMonitor::registerCallbacks()
-{
+void AlpacaSafetyMonitor::registerCallbacks() {
     AlpacaDevice::registerCallbacks();
     this->createCallBack(LHF(aGetIsSafe), HTTP_GET, "issafe");
 }

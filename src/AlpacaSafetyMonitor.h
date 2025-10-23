@@ -3,13 +3,13 @@
 
 #define ALPACA_SAFETYMONITOR_INTERFACE_VERSION "3"
 
-class AlpacaSafetyMonitor : public AlpacaDevice
-{
-    protected:
-        // alpaca commands
-        void aGetInterfaceVersion(AsyncWebServerRequest *request);
-        virtual void aGetIsSafe(AsyncWebServerRequest *request) = 0;
-        AlpacaSafetyMonitor() {strcpy(_device_type, "safetymonitor");}
-    public:
-        void registerCallbacks();
+class AlpacaSafetyMonitor : public AlpacaDevice {
+  protected:
+    // alpaca commands
+    void aGetInterfaceVersion(AsyncWebServerRequest *request);
+    virtual void aGetIsSafe(AsyncWebServerRequest *request) = 0;
+    AlpacaSafetyMonitor() { strcpy(_device_type, "safetymonitor"); }
+
+  public:
+    void registerCallbacks();
 };

@@ -1,25 +1,26 @@
 #include "AlpacaDevice.h"
 
-#define DEBUGSTREAM if(_alpacaServer->debug) _alpacaServer->debugstream
+#define DEBUGSTREAM           \
+    if (_alpacaServer->debug) \
+    _alpacaServer->debugstream
 
 // create url and register callback for REST API
-void AlpacaDevice::createCallBack(ArRequestHandlerFunction fn, WebRequestMethodComposite type, const char command[], bool devicemethod)
-{
+void AlpacaDevice::createCallBack(ArRequestHandlerFunction fn, WebRequestMethodComposite type, const char command[], bool devicemethod) {
     char url[64];
     snprintf(url, sizeof(url), ALPACA_DEVICE_COMMAND, _device_type, _device_number, command);
     DEBUGSTREAM->print("# Register handler for \"");
     DEBUGSTREAM->print(url);
     DEBUGSTREAM->print("\" to ");
     DEBUGSTREAM->println(command);
-    
+
     // register handler for generated URI
     _alpacaServer->getServerTCP()->on(url, type, fn);
 
     // add command to supported methods if devicemethod is true
-    if(devicemethod) {
+    if (devicemethod) {
         int len = strlen(_supported_actions);
-        _supported_actions[len-1] = '\0';
-        if (len >2)
+        _supported_actions[len - 1] = '\0';
+        if (len > 2)
             strcat(_supported_actions, ", \"");
         else
             strcat(_supported_actions, "\"");
@@ -28,17 +29,16 @@ void AlpacaDevice::createCallBack(ArRequestHandlerFunction fn, WebRequestMethodC
     }
 }
 
-void AlpacaDevice::_setSetupPage()
-{
+void AlpacaDevice::_setSetupPage() {
     char url[64];
     snprintf(url, sizeof(url), ALPACA_DEVICE_COMMAND, _device_type, _device_number, "jsondata");
     // setup json get handler
     this->createCallBack(LHF(_getJsondata), HTTP_GET, "jsondata", false);
     // setup json post handler
-    AsyncCallbackJsonWebHandler* jsonhandler = new AsyncCallbackJsonWebHandler(url, [this](AsyncWebServerRequest *request, JsonVariant& json) {
-       JsonObject jsonObj = json.as<JsonObject>();
-       this->aReadJson(jsonObj);
-       request->send(200, F("application/json"), F("{\"recieved\":\"true\"}"));
+    AsyncCallbackJsonWebHandler *jsonhandler = new AsyncCallbackJsonWebHandler(url, [this](AsyncWebServerRequest *request, JsonVariant &json) {
+        JsonObject jsonObj = json.as<JsonObject>();
+        this->aReadJson(jsonObj);
+        request->send(200, F("application/json"), F("{\"recieved\":\"true\"}"));
     });
     _alpacaServer->getServerTCP()->addHandler(jsonhandler);
 
@@ -51,8 +51,7 @@ void AlpacaDevice::_setSetupPage()
 }
 
 // register callbacks for REST API
-void AlpacaDevice::registerCallbacks()
-{
+void AlpacaDevice::registerCallbacks() {
     this->createCallBack(LHF(aPutAction), HTTP_PUT, "action", false);
     this->createCallBack(LHF(aPutCommandBlind), HTTP_PUT, "commandblind", false);
     this->createCallBack(LHF(aPutCommandBool), HTTP_PUT, "commandbool", false);
@@ -69,7 +68,7 @@ void AlpacaDevice::registerCallbacks()
     _setSetupPage();
 }
 
-void AlpacaDevice::setDeviceNumber( int8_t device_number) {
+void AlpacaDevice::setDeviceNumber(int8_t device_number) {
     _device_number = device_number;
     snprintf(_device_url, sizeof(_device_url), ALPACA_DEVICE_COMMAND, _device_type, _device_number, "setup");
     snprintf(_device_name, sizeof(_device_name), ALPACA_DEFAULT_NAME, _device_type, _device_number);
@@ -77,55 +76,51 @@ void AlpacaDevice::setDeviceNumber( int8_t device_number) {
 }
 
 // alpaca commands
-void AlpacaDevice::aPutAction(AsyncWebServerRequest *request)
-{
+void AlpacaDevice::aPutAction(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, nullptr, NotImplemented);
 };
-void AlpacaDevice::aPutCommandBlind(AsyncWebServerRequest *request)
-{
+void AlpacaDevice::aPutCommandBlind(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, nullptr, NotImplemented);
 };
-void AlpacaDevice::aPutCommandBool(AsyncWebServerRequest *request){
+void AlpacaDevice::aPutCommandBool(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, nullptr, NotImplemented);
 };
-void AlpacaDevice::aPutCommandString(AsyncWebServerRequest *request){
+void AlpacaDevice::aPutCommandString(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, nullptr, NotImplemented);
 };
-void AlpacaDevice::aGetConnected(AsyncWebServerRequest *request){
+void AlpacaDevice::aGetConnected(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, (_isconnected ? "true" : "false"));
 };
-void AlpacaDevice::aPutConnected(AsyncWebServerRequest *request){
+void AlpacaDevice::aPutConnected(AsyncWebServerRequest *request) {
     _isconnected = !_isconnected;
-    _alpacaServer->respond(request, (_isconnected ? "true" : "false"));  // bug correction
+    _alpacaServer->respond(request, (_isconnected ? "true" : "false")); // bug correction
 };
-void AlpacaDevice::aGetDescription(AsyncWebServerRequest *request){
+void AlpacaDevice::aGetDescription(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, _device_desc);
 };
-void AlpacaDevice::aGetDriverInfo(AsyncWebServerRequest *request){
+void AlpacaDevice::aGetDriverInfo(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, ALPACA_DRIVER_INFO);
 };
-void AlpacaDevice::aGetDriverVersion(AsyncWebServerRequest *request){
+void AlpacaDevice::aGetDriverVersion(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, ALPACA_DRIVER_VER);
 };
-void AlpacaDevice::aGetName(AsyncWebServerRequest *request){
+void AlpacaDevice::aGetName(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, getDeviceName());
 };
-void AlpacaDevice::aGetSupportedActions(AsyncWebServerRequest *request){
+void AlpacaDevice::aGetSupportedActions(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, _supported_actions);
 };
 
-void AlpacaDevice::aReadJson(JsonObject &root)
-{
-    const char* name = root[F("General")][F("Name")];
-    if(name)
+void AlpacaDevice::aReadJson(JsonObject &root) {
+    const char *name = root[F("General")][F("Name")];
+    if (name)
         strlcpy(_device_name, name, sizeof(_device_name));
-    const char* desc = root[F("General")][F("Description")];
-    if(desc)
+    const char *desc = root[F("General")][F("Description")];
+    if (desc)
         strlcpy(_device_desc, desc, sizeof(_device_name));
 }
 
-void AlpacaDevice::aWriteJson(JsonObject &root)
-{
+void AlpacaDevice::aWriteJson(JsonObject &root) {
     // read-only values marked with #
     JsonObject obj_general = root[F("General")].to<JsonObject>();
     obj_general[F("Name")] = getDeviceName();
@@ -133,8 +128,7 @@ void AlpacaDevice::aWriteJson(JsonObject &root)
     obj_general[F("UID")] = _device_uid;
 }
 
-void AlpacaDevice::_getJsondata(AsyncWebServerRequest *request)
-{
+void AlpacaDevice::_getJsondata(AsyncWebServerRequest *request) {
     JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
     aWriteJson(root);

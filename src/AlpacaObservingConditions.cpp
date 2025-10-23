@@ -1,7 +1,6 @@
 #include "AlpacaObservingConditions.h"
 
-void AlpacaObservingConditions::registerCallbacks()
-{
+void AlpacaObservingConditions::registerCallbacks() {
     AlpacaDevice::registerCallbacks();
     this->createCallBack(LHF(aGetAveragePeriod), HTTP_GET, "averageperiod");
     this->createCallBack(LHF(aPutAveragePeriod), HTTP_PUT, "averageperiod");
@@ -21,7 +20,7 @@ void AlpacaObservingConditions::registerCallbacks()
     this->createCallBack(LHF(aGetSensorDescription), HTTP_GET, "sensordescription");
     this->createCallBack(LHF(aGetTimeSinceLastUpdate), HTTP_GET, "timesincelastupdate");
     this->createCallBack(LHF(aGetCloudCover), HTTP_GET, "cloudcover");
-}       
+}
 
 void AlpacaObservingConditions::aGetInterfaceVersion(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, ALPACA_OBSERVINGCONDITIONS_INTERFACE_VERSION);
