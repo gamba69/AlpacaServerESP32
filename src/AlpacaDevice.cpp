@@ -47,7 +47,7 @@ void AlpacaDevice::_setSetupPage() {
     DEBUGSTREAM->print(_device_url);
     DEBUGSTREAM->print("\" to ");
     DEBUGSTREAM->println(F("/www/setup.html"));
-    _alpacaServer->getServerTCP()->serveStatic(_device_url, SPIFFS, "/www/setup.html");
+    _alpacaServer->getServerTCP()->serveStatic(_device_url, LittleFS, "/www/setup.html");
 }
 
 // register callbacks for REST API

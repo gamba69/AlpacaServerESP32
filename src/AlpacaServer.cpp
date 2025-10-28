@@ -20,8 +20,8 @@ AlpacaServer::AlpacaServer(const char *name) {
 // initialize alpaca server
 void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
     // Setup filesystem
-    if (!SPIFFS.begin()) {
-        Serial.println(F("# Error mounting SPIFFS!"));
+    if (!LittleFS.begin()) {
+        Serial.println(F("# Error mounting LittleFS!"));
     }
 
     // setup ports
@@ -49,8 +49,8 @@ void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
 // initialize alpaca server
 void AlpacaServer::begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer *tcp_server, uint16_t tcp_port) {
     // Setup filesystem
-    if (!SPIFFS.begin()) {
-        Serial.println(F("# Error mounting SPIFFS!"));
+    if (!LittleFS.begin()) {
+        Serial.println(F("# Error mounting LittleFS!"));
     }
 
     // setup ports
@@ -107,10 +107,10 @@ void AlpacaServer::_registerCallbacks() {
     _serverTCP->on("/management/v1/configureddevices", HTTP_GET, LHF(_getConfiguredDevices));
 
     // setup webpages
-    _serverTCP->serveStatic("/setup", SPIFFS, "/www/setup.html");
-    _serverTCP->serveStatic(SETTINGS_FILE, SPIFFS, SETTINGS_FILE);
-    _serverTCP->serveStatic("/js", SPIFFS, "/www/js/").setCacheControl("max-age=3600");
-    _serverTCP->serveStatic("/css", SPIFFS, "/www/css/").setCacheControl("max-age=3600");
+    _serverTCP->serveStatic("/setup", LittleFS, "/www/setup.html");
+    _serverTCP->serveStatic(SETTINGS_FILE, LittleFS, SETTINGS_FILE);
+    _serverTCP->serveStatic("/js", LittleFS, "/www/js/").setCacheControl("max-age=3600");
+    _serverTCP->serveStatic("/css", LittleFS, "/www/css/").setCacheControl("max-age=3600");
 
     DEBUGSTREAM->println(F("# Register handler for \"/jsondata\" to readJson"));
     _serverTCP->on("/jsondata", HTTP_GET, LHF(_getJsondata));
@@ -344,10 +344,10 @@ bool AlpacaServer::saveSettings() {
         JsonObject json_obj = root[_device[i]->getDeviceUID()].to<JsonObject>();
         _device[i]->aWriteJson(json_obj);
     }
-    SPIFFS.remove(SETTINGS_FILE);
-    File file = SPIFFS.open(SETTINGS_FILE, FILE_WRITE);
+    LittleFS.remove(SETTINGS_FILE);
+    File file = LittleFS.open(SETTINGS_FILE, FILE_WRITE);
     if (!file) {
-        DEBUGSTREAM->println(F("# SPIFFS could not create settings.json"));
+        DEBUGSTREAM->println(F("# LittleFS could not create settings.json"));
         return false;
     }
     if (serializeJson(doc, file) == 0) {
@@ -364,9 +364,9 @@ bool AlpacaServer::saveSettings() {
 bool AlpacaServer::loadSettings() {
     JsonDocument doc;
 
-    File file = SPIFFS.open(SETTINGS_FILE, FILE_READ);
+    File file = LittleFS.open(SETTINGS_FILE, FILE_READ);
     if (!file) {
-        DEBUGSTREAM->println(F("# SPIFFS could not open settings.json"));
+        DEBUGSTREAM->println(F("# LittleFS could not open settings.json"));
         return false;
     }
     DeserializationError error = deserializeJson(doc, file);

@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <AsyncUDP.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 #include <esp_system.h>
 // #include <WebServer.h>
 #include <ArduinoJson.h>
