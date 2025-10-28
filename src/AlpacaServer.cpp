@@ -46,6 +46,33 @@ void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
     _registerCallbacks();
 }
 
+// initialize alpaca server
+void AlpacaServer::begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer *tcp_server, uint16_t tcp_port) {
+    // Setup filesystem
+    if (!SPIFFS.begin()) {
+        Serial.println(F("# Error mounting SPIFFS!"));
+    }
+
+    // setup ports
+    _portUDP = udp_port;
+    _portTCP = tcp_port;
+
+    DEBUGSTREAM->print("# Ascom Alpaca discovery port (UDP): ");
+    DEBUGSTREAM->println(_portUDP);
+    _serverUDP = *udp_server;
+    _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
+
+    DEBUGSTREAM->print("# Ascom Alpaca server port (TCP): ");
+    DEBUGSTREAM->println(_portTCP);
+    _serverTCP = tcp_server;
+    _serverTCP->onNotFound([this](AsyncWebServerRequest *request) {
+        String url = request->url();
+        request->send(400, "text/plain", "Not found: '" + url + "'");
+    });
+
+    _registerCallbacks();
+}
+
 // add alpaca device to server
 void AlpacaServer::addDevice(AlpacaDevice *device) {
     if (_n_devices == ALPACA_MAX_DEVICES) {

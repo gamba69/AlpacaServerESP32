@@ -47,6 +47,7 @@ class AlpacaServer {
 
     AlpacaServer(const char *name);
     void begin(uint16_t udp_port, uint16_t tcp_port);
+    void begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer *tcp_server, uint16_t tcp_port);
     void addDevice(AlpacaDevice *device);
     bool getParam(AsyncWebServerRequest *request, const char *name, bool &value);
     bool getParam(AsyncWebServerRequest *request, const char *name, float &value);
