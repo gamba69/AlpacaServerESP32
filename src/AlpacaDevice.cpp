@@ -8,7 +8,7 @@
 void AlpacaDevice::createCallBack(ArRequestHandlerFunction fn, WebRequestMethodComposite type, const char command[], bool devicemethod) {
     char url[64];
     snprintf(url, sizeof(url), ALPACA_DEVICE_COMMAND, _device_type, _device_number, command);
-    DEBUGSTREAM->print("# Register handler for \"");
+    DEBUGSTREAM->print("[ALPACA] Register handler for \"");
     DEBUGSTREAM->print(url);
     DEBUGSTREAM->print("\" to ");
     DEBUGSTREAM->println(command);
@@ -43,7 +43,7 @@ void AlpacaDevice::_setSetupPage() {
     _alpacaServer->getServerTCP()->addHandler(jsonhandler);
 
     // serve static setup page
-    DEBUGSTREAM->print("# Register handler for \"");
+    DEBUGSTREAM->print("[ALPACA] Register handler for \"");
     DEBUGSTREAM->print(_device_url);
     DEBUGSTREAM->print("\" to ");
     DEBUGSTREAM->println(F("/www/setup.html"));
