@@ -20,6 +20,8 @@ class AlpacaDevice;
 
 class AlpacaServer {
   private:
+    Stream *logger = &Serial;
+
     AsyncWebServer *_serverTCP;
     AsyncUDP _serverUDP;
     uint16_t _portTCP;
@@ -42,8 +44,15 @@ class AlpacaServer {
     void _getLinks(AsyncWebServerRequest *request);
 
   public:
-    bool debug = true;
-    Stream *debugstream = &Serial;
+    // Print a log message to Serial, can be overwritten
+    virtual void logMessage(String msg);
+    // Print a part of log message to Serial, can be overwritten
+    virtual void logMessagePart(String msg);
+    // Set current logger
+    void setLogger(Stream *stream);
+
+    // bool debug = true;
+    // Stream *debugstream = &Serial;
 
     AlpacaServer(const char *name);
     void begin(uint16_t udp_port, uint16_t tcp_port);

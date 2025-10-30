@@ -1,9 +1,9 @@
 #include "AlpacaServer.h"
 #include "AlpacaDevice.h"
 
-#define DEBUGSTREAM \
-    if (debug)      \
-    debugstream
+// #define DEBUGSTREAM \
+//     if (debug)      \
+//     debugstream
 
 #define SETTINGS_FILE "/settings.json"
 
@@ -28,13 +28,11 @@ void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
     _portUDP = udp_port;
     _portTCP = tcp_port;
 
-    DEBUGSTREAM->print("[ALPACA] Ascom Alpaca discovery port (UDP): ");
-    DEBUGSTREAM->println(_portUDP);
+    logMessage("[ALPACA] Ascom Alpaca discovery port (UDP): " + String(_portUDP));
     _serverUDP.listen(_portUDP);
     _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
 
-    DEBUGSTREAM->print("[ALPACA] Ascom Alpaca server port (TCP): ");
-    DEBUGSTREAM->println(_portTCP);
+    logMessage("[ALPACA] Ascom Alpaca server port (TCP): " + String(_portTC));
     _serverTCP = new AsyncWebServer(_portTCP);
     _serverTCP->begin();
 
@@ -50,20 +48,18 @@ void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
 void AlpacaServer::begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer *tcp_server, uint16_t tcp_port) {
     // Setup filesystem
     if (!LittleFS.begin()) {
-        DEBUGSTREAM->println(F("[ALPACA] Error mounting LittleFS!"));
+        logMessage(F("[ALPACA] Error mounting LittleFS!"));
     }
 
     // setup ports
     _portUDP = udp_port;
     _portTCP = tcp_port;
 
-    DEBUGSTREAM->print("[ALPACA] Ascom Alpaca discovery port (UDP): ");
-    DEBUGSTREAM->println(_portUDP);
+    logMessage("[ALPACA] Ascom Alpaca discovery port (UDP): " + String(_portUDP));
     _serverUDP = *udp_server;
     _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
 
-    DEBUGSTREAM->print("[ALPACA] Ascom Alpaca server port (TCP): ");
-    DEBUGSTREAM->println(_portTCP);
+    logMessage("[ALPACA] Ascom Alpaca server port (TCP): " + String(_portTCP));
     _serverTCP = tcp_server;
     _serverTCP->onNotFound([this](AsyncWebServerRequest *request) {
         String url = request->url();
@@ -76,7 +72,7 @@ void AlpacaServer::begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer
 // add alpaca device to server
 void AlpacaServer::addDevice(AlpacaDevice *device) {
     if (_n_devices == ALPACA_MAX_DEVICES) {
-        DEBUGSTREAM->println("[ALPACA] ERROR - max alpaca devices exceeded");
+        logMessage(F("[ALPACA] ERROR - max alpaca devices exceeded"));
         return;
     }
 
@@ -99,11 +95,11 @@ void AlpacaServer::addDevice(AlpacaDevice *device) {
 // register callbacks for REST API
 void AlpacaServer::_registerCallbacks() {
     // setup rest api
-    DEBUGSTREAM->println(F("[ALPACA] Register handler for \"/management/apiversions\" to getApiVersions"));
+    logMessage(F("[ALPACA] Register handler for \"/management/apiversions\" to getApiVersions"));
     _serverTCP->on("/management/apiversions", HTTP_GET, LHF(_getApiVersions));
-    DEBUGSTREAM->println(F("[ALPACA] Register handler for \"/management/v1/description\" to getDescription"));
+    logMessage(F("[ALPACA] Register handler for \"/management/v1/description\" to getDescription"));
     _serverTCP->on("/management/v1/description", HTTP_GET, LHF(_getDescription));
-    DEBUGSTREAM->println(F("[ALPACA] Register handler for \"/management/v1/configureddevices\" to getConfiguredDevices"));
+    logMessage(F("[ALPACA] Register handler for \"/management/v1/configureddevices\" to getConfiguredDevices"));
     _serverTCP->on("/management/v1/configureddevices", HTTP_GET, LHF(_getConfiguredDevices));
 
     // setup webpages
@@ -112,7 +108,7 @@ void AlpacaServer::_registerCallbacks() {
     _serverTCP->serveStatic("/js", LittleFS, "/www/js/").setCacheControl("max-age=3600");
     _serverTCP->serveStatic("/css", LittleFS, "/www/css/").setCacheControl("max-age=3600");
 
-    DEBUGSTREAM->println(F("[ALPACA] Register handler for \"/jsondata\" to readJson"));
+    logMessage(F("[ALPACA] Register handler for \"/jsondata\" to readJson"));
     _serverTCP->on("/jsondata", HTTP_GET, LHF(_getJsondata));
     _serverTCP->on("/links", HTTP_GET, LHF(_getLinks));
     AsyncCallbackJsonWebHandler *jsonhandler = new AsyncCallbackJsonWebHandler("/jsondata", [this](AsyncWebServerRequest *request, JsonVariant &json) {
@@ -229,10 +225,7 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, float value, int32_t 
 
 // send response to alpaca client with string
 void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, int32_t error_number, const char *error_message) {
-    DEBUGSTREAM->print("[ALPACA] Alpaca (");
-    DEBUGSTREAM->print(request->client()->remoteIP());
-    DEBUGSTREAM->print(") ");
-    DEBUGSTREAM->println(request->url());
+    logMessage("[ALPACA] Alpaca (" + String(request->client()->remoteIP()) + ") " + String(request->url()));
 
     // int clientID = 0;
     int clientTransactionID = 0;
@@ -262,7 +255,7 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, in
     // #define ALPACA_RESPOSE_VALUE_ERROR     "{\n\t\"Value\": %s,\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     // #define ALPACA_RESPOSE_VALUE_ERROR_STR "{\n\t\"Value\": \"%s\",\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     request->send(200, ALPACA_JSON_TYPE, response);
-    DEBUGSTREAM->println(response);
+    logMessage("[ALPACA] " + String(response));
 }
 
 // Handler for replying to ascom alpaca discovery UDP packet
@@ -272,23 +265,20 @@ void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket &udpPacket) {
     if (length == 0)
         return;
 
-    DEBUGSTREAM->print(F("[ALPACA] Alpaca Discovery - Remote ip "));
-    DEBUGSTREAM->println(udpPacket.remoteIP());
+    logMessage("[ALPACA] Alpaca Discovery - Remote ip " + String(udpPacket.remoteIP()));
 
     // check size
     if (length < 16) {
-        DEBUGSTREAM->print(F("[ALPACA] Alpaca Discovery - Wrong packet size "));
-        DEBUGSTREAM->println(length);
+        logMessage("[ALPACA] Alpaca Discovery - Wrong packet size " + String(length));
         return;
     }
 
     // check package content
     AlpacaDiscoveryPacket *alpaca_packet = (AlpacaDiscoveryPacket *)udpPacket.data();
     if (alpaca_packet->valid()) {
-        DEBUGSTREAM->print("[ALPACA] Alpaca Discovery - Header v. ");
-        DEBUGSTREAM->println(alpaca_packet->version());
+        logMessage("[ALPACA] Alpaca Discovery - Header v. " + alpaca_packet->version());
     } else {
-        DEBUGSTREAM->println("[ALPACA] Alpaca Discovery - Header mismatch");
+        logMessage("[ALPACA] Alpaca Discovery - Header mismatch");
         return;
     }
 
@@ -347,15 +337,15 @@ bool AlpacaServer::saveSettings() {
     LittleFS.remove(SETTINGS_FILE);
     File file = LittleFS.open(SETTINGS_FILE, FILE_WRITE);
     if (!file) {
-        DEBUGSTREAM->println(F("[ALPACA] LittleFS could not create settings.json"));
+        logMessage(F("[ALPACA] LittleFS could not create settings.json"));
         return false;
     }
     if (serializeJson(doc, file) == 0) {
-        DEBUGSTREAM->println(F("[ALPACA] ArduinoJson failed to write settings.json"));
+        logMessage(F("[ALPACA] ArduinoJson failed to write settings.json"));
         file.close();
         return false;
     } else {
-        DEBUGSTREAM->println(F("[ALPACA] ArduinoJson wrote to settings.json succesfully"));
+        logMessage(F("[ALPACA] ArduinoJson wrote to settings.json succesfully"));
     }
     file.close();
     return true;
@@ -366,17 +356,17 @@ bool AlpacaServer::loadSettings() {
 
     File file = LittleFS.open(SETTINGS_FILE, FILE_READ);
     if (!file) {
-        DEBUGSTREAM->println(F("[ALPACA] LittleFS could not open settings.json"));
+        logMessage(F("[ALPACA] LittleFS could not open settings.json"));
         return false;
     }
     DeserializationError error = deserializeJson(doc, file);
     JsonObject root = doc.as<JsonObject>();
     file.close();
     if (error) {
-        DEBUGSTREAM->println(F("[ALPACA] ArduinoJson failed to parse settings.json"));
+        logMessage(F("[ALPACA] ArduinoJson failed to parse settings.json"));
         return false;
     } else {
-        DEBUGSTREAM->println(F("[ALPACA] ArduinoJson opened settings.json succesfully"));
+        logMessage(F("[ALPACA] ArduinoJson opened settings.json succesfully"));
     }
     _readJson(root);
     for (int i = 0; i < _n_devices; i++) {
@@ -385,4 +375,16 @@ bool AlpacaServer::loadSettings() {
             _device[i]->aReadJson(json_obj);
     }
     return true;
+}
+
+void AlpacaServer::logMessage(String msg) {
+    logger->println(msg);
+}
+
+void AlpacaServer::logMessagePart(String msg) {
+    logger->print(msg);
+}
+
+void AlpacaServer::setLogger(Stream *stream) {
+    logger = stream;
 }
