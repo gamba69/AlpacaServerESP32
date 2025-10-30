@@ -32,7 +32,7 @@ void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
     _serverUDP.listen(_portUDP);
     _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
 
-    logMessage("[ALPACA] Ascom Alpaca server port (TCP): " + String(_portTC));
+    logMessage("[ALPACA] Ascom Alpaca server port (TCP): " + String(_portTCP));
     _serverTCP = new AsyncWebServer(_portTCP);
     _serverTCP->begin();
 
