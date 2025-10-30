@@ -387,7 +387,7 @@ void AlpacaServer::logMessagePart(String msg, bool showtime = false) {
     logger->print(msg);
 }
 
-void AlpacaServer::setLogger(Stream *stream, std::function<String()> function = nullptr) {
+void AlpacaServer::setLogger(Stream *stream, std::function<String()> function = NULL) {
     logger = stream;
     logtime = function;
 }
