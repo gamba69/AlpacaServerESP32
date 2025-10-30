@@ -51,9 +51,6 @@ class AlpacaServer {
     // Set current logger
     void setLogger(Stream *stream);
 
-    // bool debug = true;
-    // Stream *debugstream = &Serial;
-
     AlpacaServer(const char *name);
     void begin(uint16_t udp_port, uint16_t tcp_port);
     void begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer *tcp_server, uint16_t tcp_port);

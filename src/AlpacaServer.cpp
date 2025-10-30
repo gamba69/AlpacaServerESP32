@@ -1,10 +1,6 @@
 #include "AlpacaServer.h"
 #include "AlpacaDevice.h"
 
-// #define DEBUGSTREAM \
-//     if (debug)      \
-//     debugstream
-
 #define SETTINGS_FILE "/settings.json"
 
 AlpacaServer::AlpacaServer(const char *name) {

@@ -1,9 +1,5 @@
 #include "AlpacaDevice.h"
 
-// #define DEBUGSTREAM           \
-//     if (_alpacaServer->debug) \
-//     _alpacaServer->debugstream
-
 // create url and register callback for REST API
 void AlpacaDevice::createCallBack(ArRequestHandlerFunction fn, WebRequestMethodComposite type, const char command[], bool devicemethod) {
     char url[64];
