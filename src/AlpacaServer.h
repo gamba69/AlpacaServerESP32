@@ -20,7 +20,10 @@ class AlpacaDevice;
 
 class AlpacaServer {
   private:
+    // Logger stream
     Stream *logger = &Serial;
+    // Logger time function
+    std::function<String()> logtime = nullptr;
 
     AsyncWebServer *_serverTCP;
     AsyncUDP _serverUDP;
@@ -44,12 +47,12 @@ class AlpacaServer {
     void _getLinks(AsyncWebServerRequest *request);
 
   public:
-    // Print a log message to Serial, can be overwritten
-    virtual void logMessage(String msg);
-    // Print a part of log message to Serial, can be overwritten
-    virtual void logMessagePart(String msg);
+    // Print a log message, can be overwritten
+    virtual void logMessage(String msg, bool showtime);
+    // Print a part of log message, can be overwritten
+    virtual void logMessagePart(String msg, bool showtime);
     // Set current logger
-    void setLogger(Stream *stream);
+    void setLogger(Stream *stream, std::function<String()> logtime);
 
     AlpacaServer(const char *name);
     void begin(uint16_t udp_port, uint16_t tcp_port);
