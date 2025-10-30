@@ -20,8 +20,8 @@ class AlpacaDevice;
 
 class AlpacaServer {
   private:
-    // Logger stream
-    Stream *logger = &Serial;
+    // Logger print
+    Print *logger = &Serial;
     // Logger time function
     std::function<String()> logtime = nullptr;
 
@@ -52,7 +52,7 @@ class AlpacaServer {
     // Print a part of log message, can be overwritten
     virtual void logMessagePart(String msg, bool showtime = false);
     // Set current logger
-    void setLogger(Stream *stream, std::function<String()> logtime = NULL);
+    void setLogger(Print *print, std::function<String()> logtime = NULL);
 
     AlpacaServer(const char *name);
     void begin(uint16_t udp_port, uint16_t tcp_port);
