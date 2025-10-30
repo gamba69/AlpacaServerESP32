@@ -373,21 +373,21 @@ bool AlpacaServer::loadSettings() {
     return true;
 }
 
-void AlpacaServer::logMessage(String msg, bool showtime = true) {
+void AlpacaServer::logMessage(String msg, bool showtime) {
     if(logtime && showtime) {
         logger->print(logtime() + " ");
     }
     logger->println(msg);
 }
 
-void AlpacaServer::logMessagePart(String msg, bool showtime = false) {
+void AlpacaServer::logMessagePart(String msg, bool showtime) {
     if(logtime && showtime) {
         logger->print(logtime() + " ");
     }
     logger->print(msg);
 }
 
-void AlpacaServer::setLogger(Stream *stream, std::function<String()> function = NULL) {
+void AlpacaServer::setLogger(Stream *stream, std::function<String()> function) {
     logger = stream;
     logtime = function;
 }
