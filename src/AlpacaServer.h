@@ -20,10 +20,12 @@ class AlpacaDevice;
 
 class AlpacaServer {
   private:
+    // Logger println
+    std::function<void(String)> logLine = NULL;
     // Logger print
-    Print *logger = &Serial;
+    std::function<void(String)> logLinePart = NULL;
     // Logger time function
-    std::function<String()> logtime = nullptr;
+    std::function<String()> logTime = NULL;
 
     AsyncWebServer *_serverTCP;
     AsyncUDP _serverUDP;
@@ -52,7 +54,7 @@ class AlpacaServer {
     // Print a part of log message, can be overwritten
     virtual void logMessagePart(String msg, bool showtime = false);
     // Set current logger
-    void setLogger(Print *print, std::function<String()> logtime = NULL);
+    void setLogger(std::function<void(String)> logLineCallback = NULL, std::function<void(String)> logLinePartCallback = NULL, std::function<String()> logTimeCallback = NULL);
 
     AlpacaServer(const char *name);
     void begin(uint16_t udp_port, uint16_t tcp_port);
