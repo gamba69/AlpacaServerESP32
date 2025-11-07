@@ -106,7 +106,7 @@ $.widget('jsnook.jsonFormer', {
                  *
                  * @type String
                  */
-                var statement = 'newObj' + propertyChain + ' = ' + (typeof(val) == "string"? '"' + val + '"' : val);
+                var statement = 'newObj' + propertyChain + ' = ' + (typeof (val) == "string" ? '"' + val + '"' : val);
                 eval(statement);
             }
         }
@@ -152,7 +152,7 @@ $.widget('jsnook.jsonFormer', {
             switch (typeof (val)) {
                 case "array":
                     box = $(self.options.arrayTemplate);
-                    $(box).find('label').text(key);
+                    $(box).find('label').text(key.asLabel());
                     innerContainer = $(box).find('.json-form-inner');
                     $(container).append(box);
                     self._recursiveFunction(key, val, innerContainer, pKey);
@@ -161,11 +161,11 @@ $.widget('jsnook.jsonFormer', {
                     if (!self._isEmpty(val)) {
                         if ($.isArray(val)) {
                             box = $(self.options.arrayTemplate);
-                            $(box).find('label').text(key);
+                            $(box).find('label').text(key.asLabel());
                             innerContainer = $(box).find('.json-form-inner');
                         } else {
                             box = $(self.options.objectTemplate);
-                            $(box).find('#title').html("<H5>"+key+"</H5>");
+                            $(box).find('#title').html("<H5>" + key + "</H5>");
                             innerContainer = $(box).find('.json-form-inner');
                         }
                         $(container).append(box);
@@ -173,12 +173,12 @@ $.widget('jsnook.jsonFormer', {
                     } else {
                         box = $(self.options.emptyObjectTemplate);
                         val = JSON.stringify(val);
-                        $(box).find('label').text(key);
+                        $(box).find('label').text(key.asLabel());
                         $(box).find('p').attr('id', pKey)
-                                .attr('value', val)
-                                .attr('type', 'plain-text')
-                                .attr('data-original', val)
-                                .text(val);
+                            .attr('value', val)
+                            .attr('type', 'plain-text')
+                            .attr('data-original', val)
+                            .text(val);
                         $(container).append(box);
                     }
                     break;
@@ -187,12 +187,15 @@ $.widget('jsnook.jsonFormer', {
                         box = $(self.options.inlineFieldTemplate);
                     } else {
                         box = $(self.options.stringTemplate);
-                        $(box).find('label').attr('for', pKey).text(key);
+                        $(box).find('label').attr('for', pKey).text(key.asLabel());
                         $(box).find('input')
-                                .attr('id', pKey)
-                                .attr('value', val)
-                                .attr('data-original', val)
-                                .attr('placeholder', key);
+                            .attr('id', pKey)
+                            .attr('value', val)
+                            .attr('data-original', val)
+                            .attr('placeholder', key);
+                        if (key.isReadonly()) {
+                            $(box).find('input').prop('readonly', true);
+                        }
                     }
                     $(container).append(box);
                     break;
@@ -200,39 +203,48 @@ $.widget('jsnook.jsonFormer', {
                     if ($.isNumeric(key)) {
                         box = $(self.options.inlineFieldTemplate);
                         $(box).attr('type', 'number')
-                                .attr('id', pKey)
-                                .attr('data-original', val)
-                                .attr('value', val);
+                            .attr('id', pKey)
+                            .attr('data-original', val)
+                            .attr('value', val);
+                        if (key.isReadonly()) {
+                            $(box).prop('readonly', true);
+                        }
                     } else {
                         box = $(self.options.stringTemplate);
-                        $(box).find('label').attr('for', pKey).text(key);
+                        $(box).find('label').attr('for', pKey).text(key.asLabel());
                         $(box).find('input')
-                                .attr('id', pKey)
-                                .attr('value', val)
-                                .attr('placeholder', key)
-                                .attr('data-original', val)
-                                .attr('type', 'number')
-                                .attr('step','any');
+                            .attr('id', pKey)
+                            .attr('value', val)
+                            .attr('placeholder', key)
+                            .attr('data-original', val)
+                            .attr('type', 'number')
+                            .attr('step', 'any');
+                        if (key.isReadonly()) {
+                            $(box).find('input').prop('readonly', true);
+                        }
                     }
                     $(container).append(box);
                     break;
                 case "boolean":
                     box = $(self.options.booleanTemplate);
-                    $(box).find('label').first().text(key);
+                    $(box).find('label').first().text(key.asLabel());
                     $(box).find('label').last().attr('for', pKey);
                     $(box).find('input')
                         .attr('id', pKey)
                         .attr('data-original', val)
                         .prop('checked', val);
+                    if (key.isReadonly()) {
+                        $(box).find('input').on('click', function () { return false; });
+                    }
                     $(container).append(box);
                     break;
                 case "null":
                     box = $(self.options.nullTemplate);
-                    $(box).find('label').attr('id', pKey).text(key);
+                    $(box).find('label').attr('id', pKey).text(key.asLabel());
                     $(box).find('p').attr('id', pKey)
-                            .attr('value', JSON.stringify(val))
-                            .attr('type', 'plain-text')
-                            .text(JSON.stringify(val));
+                        .attr('value', JSON.stringify(val))
+                        .attr('type', 'plain-text')
+                        .text(JSON.stringify(val));
                     $(container).append(box);
                     break;
             }
@@ -251,4 +263,22 @@ $.widget('jsnook.jsonFormer', {
 String.prototype.replaceAll = function (search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+String.prototype.asLabel = function () {
+    var target = this.slice();
+    target = target.replaceAll("^[A-Z]_", "");
+    target = target.replaceAll("zro", "");
+    target = target.replaceAll("zc", ",");
+    target = target.replaceAll("zp", "%");
+    target = target.replaceAll("zda", "-");
+    target = target.replaceAll("zs", "/");
+    target = target.replaceAll("zdg", "°");
+    target = target.replaceAll("zdt", "Δ");
+    target = target.replaceAll("_", "⠀");
+    return target;
+};
+
+String.prototype.isReadonly = function () {
+    return this.includes("zro");
 };

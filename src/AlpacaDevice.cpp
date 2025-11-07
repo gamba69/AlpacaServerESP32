@@ -113,9 +113,9 @@ void AlpacaDevice::aReadJson(JsonObject &root) {
 void AlpacaDevice::aWriteJson(JsonObject &root) {
     // read-only values marked with #
     JsonObject obj_general = root[F("General")].to<JsonObject>();
-    obj_general[F("Name")] = getDeviceName();
-    obj_general[F("Description")] = _device_desc;
-    obj_general[F("UID")] = _device_uid;
+    obj_general[F("Namezro")] = getDeviceName();
+    obj_general[F("Descriptionv")] = _device_desc;
+    obj_general[F("UIDzro")] = _device_uid;
 }
 
 void AlpacaDevice::_getJsondata(AsyncWebServerRequest *request) {

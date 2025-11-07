@@ -316,10 +316,10 @@ void AlpacaServer::_readJson(JsonObject &root) {
 
 void AlpacaServer::_writeJson(JsonObject &root) {
     // read-only values marked with #
-    root[F("Name")] = _name;
-    root[F("UID")] = _uid;
-    root[F("TCP_port")] = _portTCP;
-    root[F("UDP_port")] = _portUDP;
+    root[F("Namezro")] = _name;
+    root[F("UIDzro")] = _uid;
+    root[F("TCP_portzro")] = _portTCP;
+    root[F("UDP_portzro")] = _portUDP;
 }
 
 bool AlpacaServer::saveSettings() {
