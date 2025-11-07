@@ -114,7 +114,7 @@ void AlpacaDevice::aWriteJson(JsonObject &root) {
     // read-only values marked with #
     JsonObject obj_general = root[F("General")].to<JsonObject>();
     obj_general[F("Namezro")] = getDeviceName();
-    obj_general[F("Descriptionv")] = _device_desc;
+    obj_general[F("Descriptionzro")] = _device_desc;
     obj_general[F("UIDzro")] = _device_uid;
 }
 
