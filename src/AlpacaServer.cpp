@@ -92,6 +92,17 @@ void AlpacaServer::beginUdp(AsyncUDP *udp_server, uint16_t udp_port) {
 
     logMessage("[ALPACA] Ascom Alpaca discovery port (UDP): " + String(_portUDP));
     _serverUDP = *udp_server;
+    _serverUDP.listen(udp_port);
+    _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
+}
+
+// initialize alpaca udp server
+void AlpacaServer::beginUdp(uint16_t udp_port) {
+    // setup ports
+    _portUDP = udp_port;
+
+    logMessage("[ALPACA] Ascom Alpaca discovery port (UDP): " + String(_portUDP));
+    _serverUDP.listen(_portUDP);
     _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
 }
 
