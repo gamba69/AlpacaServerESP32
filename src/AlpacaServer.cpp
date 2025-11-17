@@ -40,31 +40,6 @@ void AlpacaServer::begin(uint16_t udp_port, uint16_t tcp_port) {
     _registerCallbacks();
 }
 
-// initialize alpaca server
-void AlpacaServer::begin(AsyncUDP *udp_server, uint16_t udp_port, AsyncWebServer *tcp_server, uint16_t tcp_port) {
-    // Setup filesystem
-    if (!LittleFS.begin()) {
-        logMessage(F("[ALPACA] Error mounting LittleFS!"));
-    }
-
-    // setup ports
-    _portUDP = udp_port;
-    _portTCP = tcp_port;
-
-    logMessage("[ALPACA] Ascom Alpaca discovery port (UDP): " + String(_portUDP));
-    _serverUDP = *udp_server;
-    _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
-
-    logMessage("[ALPACA] Ascom Alpaca server port (TCP): " + String(_portTCP));
-    _serverTCP = tcp_server;
-    _serverTCP->onNotFound([this](AsyncWebServerRequest *request) {
-        String url = request->url();
-        request->send(400, "text/plain", "Not found: '" + url + "'");
-    });
-
-    _registerCallbacks();
-}
-
 // initialize alpaca tcp server
 void AlpacaServer::beginTcp(AsyncWebServer *tcp_server, uint16_t tcp_port) {
     // Setup filesystem
@@ -83,17 +58,6 @@ void AlpacaServer::beginTcp(AsyncWebServer *tcp_server, uint16_t tcp_port) {
     });
 
     _registerCallbacks();
-}
-
-// initialize alpaca udp server
-void AlpacaServer::beginUdp(AsyncUDP *udp_server, uint16_t udp_port) {
-    // setup ports
-    _portUDP = udp_port;
-
-    logMessage("[ALPACA] Ascom Alpaca discovery port (UDP): " + String(_portUDP));
-    _serverUDP = *udp_server;
-    _serverUDP.listen(udp_port);
-    _serverUDP.onPacket([this](AsyncUDPPacket &udpPacket) { this->onAlpacaDiscovery(udpPacket); });
 }
 
 // initialize alpaca udp server
@@ -299,10 +263,16 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, in
 void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket &udpPacket) {
     // check for arrived UDP packet at port
     int length = udpPacket.length();
-    if (length == 0)
+    if (length == 0) {
+        logMessage("[ALPACA] Alpaca Discovery - Wrong packet size 0");
         return;
+    }
 
-    logMessage("[ALPACA] Alpaca Discovery - Remote ip " + String(udpPacket.remoteIP()));
+    String remoteIpString = String(udpPacket.remoteIP()[0]) + "." +
+                            String(udpPacket.remoteIP()[1]) + "." +
+                            String(udpPacket.remoteIP()[2]) + "." +
+                            String(udpPacket.remoteIP());
+    logMessage("[ALPACA] Alpaca Discovery - Remote ip " + remoteIpString);
 
     // check size
     if (length < 16) {
