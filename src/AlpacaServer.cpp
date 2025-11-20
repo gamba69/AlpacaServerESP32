@@ -239,6 +239,7 @@ String AlpacaServer::_stripSpaces(String s) {
     // 2. Remove internal newlines
     s.replace("\n", "");
     s.replace("\r", "");
+    s.replace("\t", "");
     // 3. Remove extra internal spaces
     while (s.indexOf("  ") != -1) {
         s.replace("  ", " ");
