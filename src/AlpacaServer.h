@@ -50,6 +50,8 @@ class AlpacaServer {
     void _getJsondata(AsyncWebServerRequest *request);
     void _getLinks(AsyncWebServerRequest *request);
 
+    String _ipReadable(IPAddress address);
+
   public:
     // Print a log message, can be overwritten
     virtual void logMessage(String msg, bool showtime = true);

@@ -226,9 +226,16 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, float value, int32_t 
     respond(request, str_val, error_number, error_message);
 }
 
+String AlpacaServer::_ipReadable(IPAddress address) {
+    return String(address[0]) + "." +
+           String(address[1]) + "." +
+           String(address[2]) + "." +
+           String(address[3]);
+}
+
 // send response to alpaca client with string
 void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, int32_t error_number, const char *error_message) {
-    logMessage("[ALPACA] Alpaca (" + String(request->client()->remoteIP()) + ") " + String(request->url()));
+    logMessage("[ALPACA] Alpaca (" + _ipReadable(request->client()->remoteIP()) + ") " + String(request->url()));
 
     // int clientID = 0;
     int clientTransactionID = 0;
@@ -270,11 +277,7 @@ void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket &udpPacket) {
         return;
     }
 
-    String remoteIpString = String(udpPacket.remoteIP()[0]) + "." +
-                            String(udpPacket.remoteIP()[1]) + "." +
-                            String(udpPacket.remoteIP()[2]) + "." +
-                            String(udpPacket.remoteIP());
-    logMessage("[ALPACA] Alpaca Discovery - Remote ip " + remoteIpString);
+    logMessage("[ALPACA] Alpaca Discovery - Remote ip " + _ipReadable(udpPacket.remoteIP()));
 
     // check size
     if (length < 16) {
