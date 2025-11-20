@@ -233,9 +233,22 @@ String AlpacaServer::_ipReadable(IPAddress address) {
            String(address[3]);
 }
 
+String AlpacaServer::_stripSpaces(String s) {
+    // 1. Trim leading/trailing whitespace
+    s.trim();
+    // 2. Remove internal newlines
+    s.replace("\n", "");
+    s.replace("\r", "");
+    // 3. Remove extra internal spaces
+    while (s.indexOf("  ") != -1) {
+        s.replace("  ", " ");
+    }
+    return s;
+}
+
 // send response to alpaca client with string
 void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, int32_t error_number, const char *error_message) {
-    logMessage("[ALPACA] Alpaca (" + _ipReadable(request->client()->remoteIP()) + ") " + String(request->url()));
+    logMessage("[ALPACA] < " + _ipReadable(request->client()->remoteIP()) + " " + String(request->url()));
 
     // int clientID = 0;
     int clientTransactionID = 0;
@@ -265,7 +278,7 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, in
     // #define ALPACA_RESPOSE_VALUE_ERROR     "{\n\t\"Value\": %s,\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     // #define ALPACA_RESPOSE_VALUE_ERROR_STR "{\n\t\"Value\": \"%s\",\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     request->send(200, ALPACA_JSON_TYPE, response);
-    logMessage("[ALPACA] " + String(response));
+    logMessage("[ALPACA] > " + _stripSpaces(String(response)));
 }
 
 // Handler for replying to ascom alpaca discovery UDP packet
