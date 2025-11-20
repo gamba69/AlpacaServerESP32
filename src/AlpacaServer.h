@@ -35,6 +35,8 @@ class AlpacaServer {
     int _serverID;
     char _uid[13];
     char _name[32];
+    char _version[32] = "";
+    char _build_date[32] = "";
     AlpacaDevice *_device[ALPACA_MAX_DEVICES];
     int _n_devices = 0;
 
@@ -56,7 +58,7 @@ class AlpacaServer {
     // Set current logger
     void setLogger(std::function<void(String)> logLineCallback = NULL, std::function<void(String)> logLinePartCallback = NULL, std::function<String()> logTimeCallback = NULL);
 
-    AlpacaServer(const char *name);
+    AlpacaServer(const char *name, const char *version = "", const char *build_date = "");
     void begin(uint16_t udp_port, uint16_t tcp_port);
     void beginTcp(AsyncWebServer *tcp_server, uint16_t tcp_port);
     void beginUdp(uint16_t udp_port);

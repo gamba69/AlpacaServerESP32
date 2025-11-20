@@ -3,7 +3,7 @@
 
 #define SETTINGS_FILE "/settings.json"
 
-AlpacaServer::AlpacaServer(const char *name) {
+AlpacaServer::AlpacaServer(const char *name, const char *version, const char *build_date) {
     // Get unique ID from wifi macadr.
     uint8_t mac_adr[6];
     esp_read_mac(mac_adr, ESP_MAC_WIFI_STA);
@@ -11,6 +11,8 @@ AlpacaServer::AlpacaServer(const char *name) {
 
     // save name
     strcpy(_name, name);
+    strcpy(_version, version);
+    strcpy(_build_date, build_date);
 }
 
 // initialize alpaca server
@@ -331,6 +333,8 @@ void AlpacaServer::_writeJson(JsonObject &root) {
     root[F("UIDzro")] = _uid;
     root[F("TCP_portzro")] = _portTCP;
     root[F("UDP_portzro")] = _portUDP;
+    root[F("Versionzro")] = _version;
+    root[F("Build_datezro")] = _build_date;
 }
 
 bool AlpacaServer::saveSettings() {
