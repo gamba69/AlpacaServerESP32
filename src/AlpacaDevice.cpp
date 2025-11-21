@@ -92,7 +92,7 @@ void AlpacaDevice::aGetDriverInfo(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, ALPACA_DRIVER_INFO);
 };
 void AlpacaDevice::aGetDriverVersion(AsyncWebServerRequest *request) {
-    _alpacaServer->respond(request, _alpacaServer->_version);
+    _alpacaServer->respond(request, ALPACA_DRIVER_VER);
 };
 void AlpacaDevice::aGetName(AsyncWebServerRequest *request) {
     _alpacaServer->respond(request, getDeviceName());
