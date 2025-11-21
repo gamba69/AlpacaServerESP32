@@ -233,7 +233,7 @@ String AlpacaServer::_ipReadable(IPAddress address) {
            String(address[3]);
 }
 
-String AlpacaServer::_stripSpaces(String s) {
+String AlpacaServer::_minifyJson(String s) {
     // 1. Trim leading/trailing whitespace
     s.trim();
     // 2. Remove internal newlines
@@ -243,6 +243,9 @@ String AlpacaServer::_stripSpaces(String s) {
     // 3. Remove extra internal spaces
     while (s.indexOf("  ") != -1) {
         s.replace("  ", " ");
+    }
+    while (s.indexOf(": ") != -1) {
+        s.replace(": ", ":");
     }
     return s;
 }
@@ -279,7 +282,7 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, in
     // #define ALPACA_RESPOSE_VALUE_ERROR     "{\n\t\"Value\": %s,\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     // #define ALPACA_RESPOSE_VALUE_ERROR_STR "{\n\t\"Value\": \"%s\",\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     request->send(200, ALPACA_JSON_TYPE, response);
-    logMessage("[ALPACA] > " + _stripSpaces(String(response)));
+    logMessage("[ALPACA] > " + _minifyJson(String(response)));
 }
 
 // Handler for replying to ascom alpaca discovery UDP packet

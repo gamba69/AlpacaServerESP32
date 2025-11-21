@@ -51,7 +51,7 @@ class AlpacaServer {
     void _getLinks(AsyncWebServerRequest *request);
 
     String _ipReadable(IPAddress address);
-    String _stripSpaces(String s);
+    String _minifyJson(String s);
 
   public:
     // Print a log message, can be overwritten
