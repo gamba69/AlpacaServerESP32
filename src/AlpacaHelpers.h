@@ -67,4 +67,4 @@ enum AlpacaExceptions : int {
     ParkedException = 0x408,               // Movement (or other invalid operation) was attempted while the device was in a parked state.
     SlavedException = 0x409,               // Movement (or other invalid operation) was attempted while the device was in slaved mode. This applies primarily to Dome drivers.
     ValueNotSetException = 0x402           // No value has yet been set for this property.
-}
+};
