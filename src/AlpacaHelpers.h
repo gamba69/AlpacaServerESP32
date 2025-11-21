@@ -57,14 +57,14 @@ enum AscomErrorCode : int64_t {
     ValueNotSet = 0x80040402                    // for reporting that a value has not been set.
 };
 
-enum AlpacaExceptions : int {
-    ActionNotImplementedException = 0x40C, // Exception thrown by a device when it receives an unknown command through the Action method.
-    InvalidOperationException = 0x40B,     // Thrown by the device to reject a command from the client.
-    InvalidValueException = 0x401,         // Exception to report an invalid value supplied to a device.
-    NotConnectedException = 0x407,         // An operation is attempted that requires communication with the device, but the device is disconnected.
-    NotImplementedException = 0x400,       // Property or method is not implemented in the device
-    OperationCancelledException = 0x40E,   // An (asynchronous) in-progress operation has been cancelled.
-    ParkedException = 0x408,               // Movement (or other invalid operation) was attempted while the device was in a parked state.
-    SlavedException = 0x409,               // Movement (or other invalid operation) was attempted while the device was in slaved mode. This applies primarily to Dome drivers.
-    ValueNotSetException = 0x402           // No value has yet been set for this property.
+enum AlpacaErrorCode : int32_t {
+    AlpacaActionNotImplementedException = 0x40C, // Exception thrown by a device when it receives an unknown command through the Action method.
+    AlpacaInvalidOperationException = 0x40B,     // Thrown by the device to reject a command from the client.
+    AlpacaInvalidValueException = 0x401,         // Exception to report an invalid value supplied to a device.
+    AlpacaNotConnectedException = 0x407,         // An operation is attempted that requires communication with the device, but the device is disconnected.
+    AlpacaNotImplementedException = 0x400,       // Property or method is not implemented in the device
+    AlpacaOperationCancelledException = 0x40E,   // An (asynchronous) in-progress operation has been cancelled.
+    AlpacaParkedException = 0x408,               // Movement (or other invalid operation) was attempted while the device was in a parked state.
+    AlpacaSlavedException = 0x409,               // Movement (or other invalid operation) was attempted while the device was in slaved mode. This applies primarily to Dome drivers.
+    AlpacaValueNotSetException = 0x402           // No value has yet been set for this property.
 };
