@@ -35,8 +35,6 @@ class AlpacaServer {
     int _serverID;
     char _uid[13];
     char _name[32];
-    char _version[32] = "";
-    char _build_date[32] = "";
     AlpacaDevice *_device[ALPACA_MAX_DEVICES];
     int _n_devices = 0;
 
@@ -54,6 +52,9 @@ class AlpacaServer {
     String _minifyJson(String s);
 
   public:
+    char _version[32] = "";
+    char _build_date[32] = "";
+
     // Print a log message, can be overwritten
     virtual void logMessage(String msg, bool showtime = true);
     // Print a part of log message, can be overwritten
