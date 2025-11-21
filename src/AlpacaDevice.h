@@ -28,9 +28,9 @@ class AlpacaDevice {
     virtual void aPutCommandString(AsyncWebServerRequest *request);
     virtual void aGetConnected(AsyncWebServerRequest *request);
     virtual void aPutConnected(AsyncWebServerRequest *request);
-    void aGetDescription(AsyncWebServerRequest *request);
-    void aGetDriverInfo(AsyncWebServerRequest *request);
-    void aGetDriverVersion(AsyncWebServerRequest *request);
+    virtual void aGetDescription(AsyncWebServerRequest *request);
+    virtual void aGetDriverInfo(AsyncWebServerRequest *request);
+    virtual void aGetDriverVersion(AsyncWebServerRequest *request);
     virtual void aGetInterfaceVersion(AsyncWebServerRequest *request) = 0;
     void aGetName(AsyncWebServerRequest *request);
     void aGetSupportedActions(AsyncWebServerRequest *request);
