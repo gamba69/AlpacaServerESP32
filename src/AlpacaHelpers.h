@@ -28,10 +28,10 @@ typedef union {
 
 // return
 #define ALPACA_API_VERSIONS "[1]"
-#define ALPACA_DRIVER_VER "v0.1.1"
-#define ALPACA_DRIVER_DESC "ESP32 Ascom Alpaca driver"
-#define ALPACA_DRIVER_INFO "ESP32 Ascom Alpaca driver by Njaal Brekke & @agnuca"
-#define ALPACA_DESCRIPTION "{\"ServerName\":\"ESP32 Ascom Alpaca Server\",\"Authors\":\"Njaal Brekke & @agnuca\",\"ServerVersion\":\"v1.1\"}"
+#define ALPACA_DRIVER_VER "v2.0"
+#define ALPACA_DRIVER_DESC "ESP32 Ascom Alpaca Driver"
+#define ALPACA_DRIVER_INFO "(c)2025 DreamSky Observatory"
+#define ALPACA_DESCRIPTION "{\"ServerName\":\"ESP32 Ascom Alpaca Server\",\"Authors\":\"gamba69 based on Njaal Brekke & Agnuca\",\"ServerVersion\":\"v2.0\"}"
 #define ALPACA_DEFAULT_NAME "%s-%i"
 #define ALPACA_UNIQUE_NAME "%s#%s%02X"
 #define ALPACA_JSON_TYPE "application/json"
