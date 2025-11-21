@@ -290,24 +290,24 @@ void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket &udpPacket) {
     // check for arrived UDP packet at port
     int length = udpPacket.length();
     if (length == 0) {
-        logMessage("[ALPACA] Alpaca Discovery - Wrong packet size 0");
+        logMessage("[ALPACA] Discovery - Wrong packet size 0");
         return;
     }
 
-    logMessage("[ALPACA] Alpaca Discovery - Remote ip " + _ipReadable(udpPacket.remoteIP()));
+    logMessage("[ALPACA] Discovery < " + _ipReadable(udpPacket.remoteIP()));
 
     // check size
     if (length < 16) {
-        logMessage("[ALPACA] Alpaca Discovery - Wrong packet size " + String(length));
+        logMessage("[ALPACA] Discovery - Wrong packet size " + String(length));
         return;
     }
 
     // check package content
     AlpacaDiscoveryPacket *alpaca_packet = (AlpacaDiscoveryPacket *)udpPacket.data();
     if (alpaca_packet->valid()) {
-        logMessage("[ALPACA] Alpaca Discovery - Header v. " + alpaca_packet->version());
+        logMessage("[ALPACA] Discovery - Header v. " + alpaca_packet->version());
     } else {
-        logMessage("[ALPACA] Alpaca Discovery - Header mismatch");
+        logMessage("[ALPACA] Discovery - Header mismatch");
         return;
     }
 
@@ -315,6 +315,8 @@ void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket &udpPacket) {
     uint8_t resp_buf[24];
     int resp_len = sprintf((char *)resp_buf, "{\"AlpacaPort\":%d}", _portTCP);
     _serverUDP.writeTo(resp_buf, resp_len, udpPacket.remoteIP(), udpPacket.remotePort());
+    String log_message = (char*)resp_buf;
+    logMessage("[ALPACA] Discovery > " + log_message);
 }
 
 void AlpacaServer::_getJsondata(AsyncWebServerRequest *request) {
