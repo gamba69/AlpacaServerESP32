@@ -271,16 +271,14 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, in
     char response[2048];
 
     if (value == nullptr) {
-        sprintf(response, ALPACA_RESPOSE_ERROR, clientTransactionID, _serverTransactionID, error_number, error_message);
+        sprintf(response, ALPACA_RESPONSE_ERROR, clientTransactionID, _serverTransactionID, error_number, error_message);
     } else {
         if ((value[0] >= '0' && value[0] <= '9') || value[0] == '[' || value[0] == '{' || value[0] == '"' || strcmp(value, "true") == 0 || strcmp(value, "false") == 0) {
-            sprintf(response, ALPACA_RESPOSE_VALUE_ERROR, value, clientTransactionID, _serverTransactionID, error_number, error_message);
+            sprintf(response, ALPACA_RESPONSE_VALUE_ERROR, value, clientTransactionID, _serverTransactionID, error_number, error_message);
         } else {
-            sprintf(response, ALPACA_RESPOSE_VALUE_ERROR_STR, value, clientTransactionID, _serverTransactionID, error_number, error_message);
+            sprintf(response, ALPACA_RESPONSE_VALUE_ERROR_STR, value, clientTransactionID, _serverTransactionID, error_number, error_message);
         }
     }
-    // #define ALPACA_RESPOSE_VALUE_ERROR     "{\n\t\"Value\": %s,\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
-    // #define ALPACA_RESPOSE_VALUE_ERROR_STR "{\n\t\"Value\": \"%s\",\n\t\"ClientTransactionID\": %i,\n\t\"ServerTransactionID\": %i,\n\t\"ErrorNumber\": %i,\n\t\"ErrorMessage\": \"%s\"\n}"
     request->send(200, ALPACA_JSON_TYPE, response);
     logMessage("[ALPACA] > " + _minifyJson(String(response)));
 }
