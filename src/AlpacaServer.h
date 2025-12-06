@@ -73,7 +73,7 @@ class AlpacaServer {
     bool getParam(AsyncWebServerRequest *request, const char *name, int &value);
     bool getParam(AsyncWebServerRequest *request, const char *name, char *buffer, int buffer_size);
     void respond(AsyncWebServerRequest *request, bool value, int32_t error_number = 0, const char *error_message = "");
-    void respond(AsyncWebServerRequest *request, int value, int32_t error_number = 0, const char *error_message = "");
+    void respond(AsyncWebServerRequest *request, int32t value, int32_t error_number = 0, const char *error_message = "");
     void respond(AsyncWebServerRequest *request, float value, int32_t error_number = 0, const char *error_message = "");
     void respond(AsyncWebServerRequest *request, const char *value, int32_t error_number = 0, const char *error_message = "");
     bool loadSettings();
