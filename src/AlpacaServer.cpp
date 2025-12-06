@@ -265,7 +265,7 @@ void AlpacaServer::respond(AsyncWebServerRequest *request, const char *value, in
         //     clientID = request->arg(i).toInt();
         // }
     }
-    _serverTransactionID++;
+    _serverTransactionID = _serverTransactionID + 1;
 
     // create msg to be sent, hope that buffer is large enough
     char response[2048];
@@ -313,7 +313,7 @@ void AlpacaServer::onAlpacaDiscovery(AsyncUDPPacket &udpPacket) {
     uint8_t resp_buf[24];
     int resp_len = sprintf((char *)resp_buf, "{\"AlpacaPort\":%d}", _portTCP);
     _serverUDP.writeTo(resp_buf, resp_len, udpPacket.remoteIP(), udpPacket.remotePort());
-    String log_message = (char*)resp_buf;
+    String log_message = (char *)resp_buf;
     logMessage("[ALPACA] Discovery > " + log_message);
 }
 
