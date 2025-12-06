@@ -9,7 +9,7 @@
 #include <ESPAsyncWebServer.h>
 
 #include "AlpacaHelpers.h"
-#include "config.h"
+// #include "config.h"
 
 // Lambda Handler Function for calling object function
 #define LHF(method) \
