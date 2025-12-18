@@ -411,22 +411,23 @@ bool AlpacaServer::loadSettings() {
 void AlpacaServer::logMessage(String msg, bool showtime) {
     if (logLine && logLinePart) {
         if (logTime && showtime) {
-            logLinePart(logTime() + " ");
+            logLinePart(logTime() + " ", logSource);
         }
-        logLine(msg);
+        logLine(msg, logSource);
     }
 }
 
 void AlpacaServer::logMessagePart(String msg, bool showtime) {
     if (logLinePart) {
         if (logTime && showtime) {
-            logLinePart(logTime() + " ");
+            logLinePart(logTime() + " ", logSource);
         }
-        logLinePart(msg);
+        logLinePart(msg, logSource);
     }
 }
 
-void AlpacaServer::setLogger(std::function<void(String)> logLineCallback, std::function<void(String)> logLinePartCallback, std::function<String()> logTimeCallback) {
+void AlpacaServer::setLogger(const int logSrc, std::function<void(String, const int)> logLineCallback, std::function<void(String, const int)> logLinePartCallback, std::function<String()> logTimeCallback) {
+    logSource - logSrc;
     logLine = logLineCallback;
     logLinePart = logLinePartCallback;
     logTime = logTimeCallback;
